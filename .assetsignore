@@ -1,0 +1,12 @@
+# Files Cloudflare must NOT publish as public website files (wrangler.jsonc serves the repo root).
+.git
+.gitignore
+.claude
+.wrangler
+node_modules
+.assetsignore
+wrangler.jsonc
+worker.js
+functions
+configs
+README.md

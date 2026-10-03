@@ -106,9 +106,13 @@ It **fails open**: if the API is unreachable, returns an error, or has no valid 
 
 Anyone with the admin password can change or clear the Customer ID, and clearing it switches the lock off. That's an accepted trade-off for easy reuse; the commit history on GitHub shows every change (`Admin: update renewal`).
 
-**Hosting requirement:** SitePragati's API sends no CORS header, so the browser goes through `functions/api/renewal-status.js`. That file only runs on **Cloudflare Pages**. On GitHub Pages or other static hosting the request returns 404, and the gate stays switched off (fail open).
+**Hosting requirement:** SitePragati's API sends no CORS header, so the browser goes through the same-site proxy in `functions/api/renewal-status.js`. It runs on Cloudflare only. On GitHub Pages or other static hosting the request returns 404, and the gate stays switched off (fail open).
 
-Cloudflare Pages setup: Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to Git → pick this repo → Framework preset "None", build command empty, output directory `/` → Deploy. Every push to `main` redeploys, including saves from the admin panel. The admin panel works unchanged there; on a `*.pages.dev` address, type the owner and repo in the setup form yourself, since they're only filled in automatically on github.io.
+**Cloudflare Workers (current setup).** The repo includes `wrangler.jsonc` and `worker.js`, so a Worker connected to this repo (Workers & Pages → Create → Import a repository) deploys correctly with no extra settings. `worker.js` handles `/api/renewal-status`, and everything else is served as static files. `.assetsignore` keeps `.git`, `README.md`, `configs/`, `functions/` and the Worker files from being published. The Worker's name in the dashboard must match `"name"` in `wrangler.jsonc` (currently `grampanchayat`). For a new customer's copy, change that name to the new Worker's name.
+
+**Cloudflare Pages (alternative).** Create → Pages → Connect to Git, with no build command and output directory `/`. Pages runs `functions/` directly and ignores `worker.js`.
+
+Every push to `main` redeploys, including saves from the admin panel. On a `*.workers.dev` or `*.pages.dev` address, type the owner and repo in the admin setup form yourself, since they're only filled in automatically on github.io.
 
 Check the proxy after deploying: `https://<site>/api/renewal-status?customerId=<ID>` should return `{"ok":true,"info":{...}}`.
 
