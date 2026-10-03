@@ -1,6 +1,6 @@
 /* Layout: civic portal — tricolour hairline, utility bar, masthead, brand nav band,
    then a single centred 1180px column of sections alternating plain and tinted grounds.
-   Branding "Heritage": maroon + marigold on warm paper, Eczar display / Hind body,
+   Branding "Heritage": maroon + marigold on warm paper, Eczar display / Baloo 2 body,
    pill controls, rangoli-dot hero ground and ornamented section heads. */
 :root {
   --brand: #7b1e2e;
@@ -26,7 +26,7 @@
   --hero-shade: 32 10 12;
 
   --font-display: "Eczar", "Noto Serif Devanagari", Georgia, serif;
-  --font-body: "Hind", "Noto Sans Devanagari", system-ui, sans-serif;
+  --font-body: "Baloo 2", "Noto Sans Devanagari", system-ui, sans-serif;
   --display-weight: 600;
 
   --step--1: .875rem;
