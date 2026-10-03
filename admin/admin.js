@@ -956,7 +956,7 @@
   }
 
   var PREVIEW_HTML = '<!doctype html><html lang="mr"><head><meta charset="utf-8"><base href="{BASE}"><meta name="viewport" content="width=device-width, initial-scale=1">' +
-    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Tiro+Devanagari+Marathi&display=swap">' +
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Eczar:wght@500;600;700&family=Hind:wght@400;500;600;700&display=swap">' +
     '<link rel="stylesheet" href="assets/style.css"></head><body><div id="app"></div><script>window.GP_CONFIG={CFG};' +
     // <base> मुळे #विभाग दुवे खरे संकेतस्थळ उघडतात; पूर्वावलोकनात त्याच पानावर स्क्रोल करा
     'document.addEventListener("click",function(e){var a=e.target.closest("a[href^=\'#\']");if(!a)return;e.preventDefault();var t=document.getElementById(a.getAttribute("href").slice(1));if(t)t.scrollIntoView();});' +
