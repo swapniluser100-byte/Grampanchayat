@@ -1,10 +1,9 @@
 /*
  * संकेतस्थळ नूतनीकरण तपासणी (SitePragati renewal gate)
  * --------------------------------------------------
- * SitePragati वरील ग्राहक नोंद तपासते. देय दिनांक उलटून गेल्यास:
- *   - सार्वजनिक संकेतस्थळ (index.html): नागरिकांना "तात्पुरते उपलब्ध नाही" अशी साधी सूचना दिसते (रक्कम/भरणा तपशील नाही).
- *   - ॲडमिन पॅनेल (data-mode="admin"): कर्मचाऱ्यांना रक्कम, UPI QR आणि "भरणा केला — पुन्हा तपासा" बटण दिसते.
- * देय दिनांकापूर्वी REMIND_DAYS दिवस ॲडमिन पॅनेलमध्ये आठवण पट्टी दिसते.
+ * SitePragati वरील ग्राहक नोंद तपासते. देय दिनांक उलटून गेल्यास सार्वजनिक संकेतस्थळ आणि ॲडमिन पॅनेल
+ * (data-mode="admin") दोन्हीवर रक्कम, UPI QR, UPI ID आणि "भरणा केला — पुन्हा तपासा" बटण असलेली पूर्ण-स्क्रीन सूचना दिसते.
+ * देय दिनांकापूर्वी REMIND_DAYS दिवस फक्त ॲडमिन पॅनेलमध्ये आठवण पट्टी दिसते.
  *
  * Fails open: नेटवर्क त्रुटी, /api/renewal-status नसणे (उदा. GitHub Pages किंवा स्थानिक चाचणी),
  * किंवा चुकीचा/रिकामा दिनांक असल्यास संकेतस्थळ नेहमीप्रमाणे चालते.
@@ -39,16 +38,13 @@
   }
   function fmtDate(d) { return d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
   function fmtAmount(n) { return "₹" + n.toLocaleString("en-IN"); }
-  function siteName(info) {
-    var c = window.GP_CONFIG && window.GP_CONFIG.site;
-    return (c && c.name) || String((info && info.business_name) || "").trim() || document.title;
-  }
-  function qrUrl(info, amount) {
-    if (!info || !info.upi_id) return "";
+  function upiLink(info, amount) {
+    var vpa = String((info && info.upi_id) || "").trim();
+    if (!vpa) return "";
     var payee = String(info.business_name || "SitePragati").trim();
-    var link = "upi://pay?pa=" + encodeURIComponent(info.upi_id) + "&pn=" + encodeURIComponent(payee) + (amount ? "&am=" + amount : "") + "&cu=INR";
-    return "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(link);
+    return "upi://pay?pa=" + encodeURIComponent(vpa) + "&pn=" + encodeURIComponent(payee) + (amount ? "&am=" + amount : "") + "&cu=INR";
   }
+  function qrUrl(link) { return "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(link); }
   function fetchInfo() {
     return fetch(API + "?customerId=" + encodeURIComponent(CUSTOMER_ID), { cache: "no-store" })
       .then(function (r) { return r.ok ? r.json() : null; })
@@ -62,7 +58,9 @@
     ".rg-card h1{font-family:'Tiro Devanagari Marathi',Georgia,serif;font-weight:400;font-size:1.5rem;line-height:1.3;margin:0 0 10px}" +
     ".rg-card p{margin:0 0 16px;color:#56665f}.rg-amt{font-size:1.3rem;font-weight:700;color:#15211c!important}" +
     ".rg-card img{display:block;margin:0 auto 16px;width:200px;height:200px;border:1px solid #d6e0da;border-radius:8px}" +
-    ".rg-card a{color:#0f5a46;font-weight:600}.rg-small{font-size:.9rem}" +
+    ".rg-card a{color:#0f5a46;font-weight:600}.rg-small{font-size:.9rem}.rg-vpa{color:#15211c;overflow-wrap:anywhere;user-select:all}" +
+    // "UPI ॲपने भरा" फक्त टच (मोबाईल) उपकरणांवर — डेस्कटॉपवर upi:// दुवा उघडत नाही
+    ".rg-card a.rg-upi{display:none;margin:0 0 16px;color:#fff;background:#c27a0e;text-decoration:none}@media (pointer:coarse){.rg-card a.rg-upi{display:inline-flex}}" +
     ".rg-btn{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:46px;padding:10px 18px;border:0;border-radius:999px;background:#0f5a46;color:#fff;font:inherit;font-weight:600;cursor:pointer}" +
     ".rg-btn:disabled{opacity:.6;cursor:wait}.rg-msg{margin:12px 0 0!important;font-size:.9rem;color:#9a5c00!important;font-weight:600}" +
     ".rg-x{position:absolute;top:8px;right:8px;width:36px;height:36px;border:0;border-radius:8px;background:transparent;font-size:22px;line-height:1;color:#56665f;cursor:pointer}" +
@@ -83,23 +81,18 @@
   }
 
   function payCard(info, due, amount, closable) {
-    var overdue = Date.now() > due.getTime(), qr = qrUrl(info, amount);
+    var overdue = Date.now() > due.getTime(), link = upiLink(info, amount);
     return '<div class="rg-card" role="document">' + (closable ? '<button class="rg-x" type="button" data-rg="close" aria-label="बंद करा">×</button>' : "") +
       "<h1>" + (overdue ? "संकेतस्थळ नूतनीकरण प्रलंबित" : "संकेतस्थळ नूतनीकरण लवकरच") + "</h1>" +
       "<p>" + (overdue ? "नूतनीकरण देय दिनांक " + esc(fmtDate(due)) + " उलटून गेल्याने संकेतस्थळ नागरिकांसाठी तात्पुरते बंद आहे. भरणा झाल्यावर ते लगेच पुन्हा सुरू होईल."
         : "नूतनीकरण देय दिनांक: " + esc(fmtDate(due)) + ". त्यानंतर संकेतस्थळ नागरिकांसाठी तात्पुरते बंद होईल.") + "</p>" +
       (amount ? '<p class="rg-amt">' + esc(fmtAmount(amount)) + " देय</p>" : "") +
-      (qr ? '<img src="' + esc(qr) + '" alt="UPI ने भरणा करण्यासाठी स्कॅन करा" width="200" height="200">' : "") +
+      // QR प्रतिमा ब्लॉक झाल्यास (ॲड ब्लॉकर/फायरवॉल) ती लपते; UPI ID आणि मोबाईलवरील "UPI ॲपने भरा" दुवा तरीही दिसतात
+      (link ? '<img src="' + esc(qrUrl(link)) + '" alt="UPI ने भरणा करण्यासाठी स्कॅन करा" width="200" height="200" onerror="this.remove()">' +
+        '<p class="rg-small">UPI ID: <b class="rg-vpa">' + esc(info.upi_id) + "</b></p>" +
+        '<a class="rg-btn rg-upi" href="' + esc(link) + '">UPI ॲपने भरा</a>' : "") +
       '<p class="rg-small">भरणा केल्यावर स्क्रीनशॉट <a href="mailto:' + esc(SUPPORT_EMAIL) + '">' + esc(SUPPORT_EMAIL) + "</a> वर ई-मेल करा.</p>" +
       '<button class="rg-btn" type="button" data-rg="recheck">भरणा केला — पुन्हा तपासा</button><p class="rg-msg" role="status" hidden></p></div>';
-  }
-
-  function siteNotice() {
-    var K = (window.GP_CONFIG && window.GP_CONFIG.contact) || {};
-    var phone = K.phone || K.mobile;
-    return '<div class="rg-card" role="document"><h1>' + esc(siteName()) + "</h1>" +
-      "<p>हे संकेतस्थळ तात्पुरते उपलब्ध नाही. कृपया काही वेळाने पुन्हा भेट द्या.</p>" +
-      "<p>तातडीच्या कामासाठी ग्रामपंचायत कार्यालयाशी संपर्क साधा" + (phone ? ': <a href="tel:' + esc(phone) + '">' + esc(phone) + "</a>" : "") + ".</p></div>";
   }
 
   function overlay(html, opts) {
@@ -161,7 +154,7 @@
       if (!info || !due) return;
       var amount = amountOf(info);
       if (Date.now() > due.getTime()) {
-        overlay(MODE === "admin" ? payCard(info, due, amount, false) : siteNotice(), { closable: false });
+        overlay(payCard(info, due, amount, false), { closable: false });
       } else if (MODE === "admin" && due.getTime() - Date.now() <= REMIND_DAYS * 86400000) {
         reminderBar(info, due, amount);
       }

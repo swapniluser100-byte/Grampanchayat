@@ -98,7 +98,9 @@ Notes:
 |---|---|---|
 | More than 7 days before the due date | nothing | nothing |
 | 0–7 days before the due date | nothing | reminder bar with amount, UPI QR in "भरणा तपशील" (payment details) |
-| After the due date (from the next day) | full-screen "temporarily unavailable, contact the office" notice, with no payment details | full-screen payment screen: amount, UPI QR, email for the screenshot, "भरणा केला — पुन्हा तपासा" (I've paid, check again) |
+| After the due date (from the next day) | full-screen payment screen (same as admin) | full-screen payment screen: amount, UPI QR, UPI ID, "UPI ॲपने भरा" (pay with UPI app, phones only), email for the screenshot, "भरणा केला — पुन्हा तपासा" (I've paid, check again) |
+
+If the QR image (from `api.qrserver.com`) is blocked by an ad blocker or firewall, it's hidden, and the UPI ID and the phone UPI button still work.
 
 It **fails open**: if the API is unreachable, returns an error, or has no valid due date, the site works normally. Paying and updating the record on sitepragati.in unlocks the site on the next page load, or straight away with the recheck button.
 
