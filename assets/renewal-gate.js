@@ -52,16 +52,16 @@
   }
 
   /* ---------------- UI ---------------- */
-  var CSS = ".rg-ov{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto;background:#f3f6f4;font-family:Mukta,'Noto Sans Devanagari',system-ui,sans-serif;color:#15211c;line-height:1.55}" +
+  var CSS = ".rg-ov{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto;background:#f3f6f4;font-family:var(--font-body,Mukta,system-ui,sans-serif);color:#15211c;line-height:1.55}" +
     ".rg-ov.rg-dim{background:rgb(10 20 16/.55)}" +
     ".rg-card{position:relative;max-width:420px;width:100%;background:#fff;border:1px solid #d6e0da;border-radius:14px;box-shadow:0 8px 30px rgb(20 40 30/.12);padding:30px 26px;text-align:center}" +
-    ".rg-card h1{font-family:'Tiro Devanagari Marathi',Georgia,serif;font-weight:400;font-size:1.5rem;line-height:1.3;margin:0 0 10px}" +
+    ".rg-card h1{font-family:var(--font-display,Georgia,serif);font-weight:var(--display-weight,400);font-size:1.5rem;line-height:1.3;margin:0 0 10px}" +
     ".rg-card p{margin:0 0 16px;color:#56665f}.rg-amt{font-size:1.3rem;font-weight:700;color:#15211c!important}" +
     ".rg-card img{display:block;margin:0 auto 16px;width:200px;height:200px;border:1px solid #d6e0da;border-radius:8px}" +
-    ".rg-card a{color:#0f5a46;font-weight:600}.rg-small{font-size:.9rem}.rg-vpa{color:#15211c;overflow-wrap:anywhere;user-select:all}" +
+    ".rg-card a{color:var(--brand,#0f5a46);font-weight:600}.rg-small{font-size:.9rem}.rg-vpa{color:#15211c;overflow-wrap:anywhere;user-select:all}" +
     // "UPI ॲपने भरा" फक्त टच (मोबाईल) उपकरणांवर — डेस्कटॉपवर upi:// दुवा उघडत नाही
-    ".rg-card a.rg-upi{display:none;margin:0 0 16px;color:#fff;background:#c27a0e;text-decoration:none}@media (pointer:coarse){.rg-card a.rg-upi{display:inline-flex}}" +
-    ".rg-btn{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:46px;padding:10px 18px;border:0;border-radius:999px;background:#0f5a46;color:#fff;font:inherit;font-weight:600;cursor:pointer}" +
+    ".rg-card a.rg-upi{display:none;margin:0 0 16px;color:#fff;background:var(--accent,#c27a0e);text-decoration:none}@media (pointer:coarse){.rg-card a.rg-upi{display:inline-flex}}" +
+    ".rg-btn{display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:46px;padding:10px 18px;border:0;border-radius:999px;background:var(--brand,#0f5a46);color:#fff;font:inherit;font-weight:600;cursor:pointer}" +
     ".rg-btn:disabled{opacity:.6;cursor:wait}.rg-msg{margin:12px 0 0!important;font-size:.9rem;color:#9a5c00!important;font-weight:600}" +
     ".rg-x{position:absolute;top:8px;right:8px;width:36px;height:36px;border:0;border-radius:8px;background:transparent;font-size:22px;line-height:1;color:#56665f;cursor:pointer}" +
     ".rg-bar{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:2147483000;display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:calc(100vw - 32px);padding:10px 12px 10px 16px;border-radius:12px;background:#fff3d6;color:#5c3a00;box-shadow:0 8px 30px rgb(0 0 0/.18);font-family:Mukta,system-ui,sans-serif;font-weight:500}" +

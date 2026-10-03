@@ -19,7 +19,7 @@ window.GP_CONFIG = {
     demo: true
   },
 
-  theme: { brand: "#0f5a46", accent: "#c27a0e", numerals: "devanagari" },
+  theme: { brand: "#0e6a8a", accent: "#ef8a17", numerals: "devanagari" },
 
   contact: {
     phone: "02300-000000",
