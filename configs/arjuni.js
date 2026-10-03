@@ -86,5 +86,6 @@ window.GP_CONFIG = {
     { id: "grievance", label: "तक्रार" },
     { id: "contact", label: "संपर्क" }
   ],
-  footer: { credit: "" }
+  footer: { credit: "" },
+  renewal: { customerId: "" }   // TODO: SitePragati Customer ID
 };

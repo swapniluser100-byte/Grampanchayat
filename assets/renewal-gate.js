@@ -10,11 +10,11 @@
  * किंवा चुकीचा/रिकामा दिनांक असल्यास संकेतस्थळ नेहमीप्रमाणे चालते.
  * API: functions/api/renewal-status.js (Cloudflare Pages Function) मार्फत, कारण SitePragati API CORS हेडर पाठवत नाही.
  *
- * Customer ID मुद्दाम config.js मध्ये नाही — ती फाइल ॲडमिन पॅनेलमधून बदलता येते.
+ * Customer ID: config.js मधील renewal.customerId (ॲडमिन पॅनेल → सेटिंग्ज). रिकामा असल्यास तपासणी बंद राहते.
  */
 (function () {
   "use strict";
-  var CUSTOMER_ID = "EmblynAQ1qENZ91";
+  var CUSTOMER_ID = String(((window.GP_CONFIG || {}).renewal || {}).customerId || "").trim();
   var SUPPORT_EMAIL = "support@sitepragati.in";
   var REMIND_DAYS = 7;
 

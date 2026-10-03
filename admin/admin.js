@@ -354,7 +354,13 @@
         summary: function (l) { return l.label; }, fields: [T("label", "नाव"), U("href", "दुवा")] },
       { type: "object", key: "footer", title: "फूटर", fields: [T("credit", "निर्मिती ओळ", { full: true, ph: "उदा. संकेतस्थळ निर्मिती: आपल्या एजन्सीचे नाव" })] }
     ] },
-    { id: "settings", title: "सेटिंग्ज", desc: "पासवर्ड, GitHub की आणि लॉग आउट.", blocks: [{ type: "settings" }] }
+    { id: "settings", title: "सेटिंग्ज", desc: "SitePragati नूतनीकरण, पासवर्ड, GitHub की आणि लॉग आउट.", blocks: [
+      { type: "object", key: "renewal", title: "SitePragati नूतनीकरण", desc: "हा Customer ID संकेतस्थळाच्या नूतनीकरणाची देय तारीख तपासण्यासाठी वापरला जातो.", fields: [
+        T("customerId", "SitePragati Customer ID", { ph: "उदा. EmblynAQ1qENZ91", mono: true,
+          hint: "रिकामे ठेवल्यास नूतनीकरण तपासणी बंद राहते. हा ग्राहक sitepragati.in वर आधी तयार असावा आणि त्याची देय तारीख भविष्यातील असावी — अन्यथा जतन केल्यावर संकेतस्थळ लगेच बंद होईल." })
+      ] },
+      { type: "settings" }
+    ] }
   ];
   var SECTION_DEFS = [["about", "आमच्याबद्दल"], ["services", "नागरिक सेवा"], ["schemes", "योजना"], ["works", "विकासकामे"], ["budget", "अर्थसंकल्प"],
     ["documents", "सूचना व दस्तऐवज"], ["committees", "समित्या"], ["gallery", "छायाचित्रे"], ["grievance", "तक्रार"], ["contact", "संपर्क"]];
@@ -609,7 +615,8 @@
     switch (f.type) {
       case "text": case "url": case "date": {
         var inp = h("input", { id: id, type: f.type === "date" ? "date" : "text", value: v == null ? "" : String(v), placeholder: f.ph || null, required: f.req || null,
-          inputmode: f.type === "url" ? "url" : null, spellcheck: f.type === "url" ? "false" : null, oninput: function () { set(inp.value); } });
+          inputmode: f.type === "url" ? "url" : null, spellcheck: f.type === "url" || f.mono ? "false" : null, autocomplete: f.mono ? "off" : null,
+          class: f.mono ? "mono" : null, oninput: function () { set(f.mono ? inp.value.trim() : inp.value); } });
         if (f.suggest && ctx && ctx.siblings) {
           var listId = id + "-dl", vals = [];
           ctx.siblings().forEach(function (s) { var x = s[f.k]; if (x && vals.indexOf(x) < 0) vals.push(x); });
@@ -913,6 +920,8 @@
   /* ---------- save / discard / preview ---------- */
   function validate() {
     if (!data.site || !String(data.site.name || "").trim()) return { page: "basic", msg: "ग्रामपंचायतीचे नाव रिकामे आहे." };
+    var cid = String((data.renewal || {}).customerId || "");
+    if (cid && !/^[A-Za-z0-9_-]{1,64}$/.test(cid)) return { page: "settings", msg: "SitePragati Customer ID मध्ये फक्त इंग्रजी अक्षरे, आकडे, - आणि _ चालतात." };
     return null;
   }
   function save(force) {

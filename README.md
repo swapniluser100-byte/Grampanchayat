@@ -14,7 +14,7 @@ configs/arjuni.js   starter config for Arjuni (verified facts only, TODOs marked
 images/             put logo, hero photo, leader photos, gallery photos here
 files/              PDFs uploaded from the admin panel (created on first upload)
 admin/              password-protected admin panel (open /admin/ on the live site)
-assets/renewal-gate.js         SitePragati renewal check (Customer ID lives here, not in config.js)
+assets/renewal-gate.js         SitePragati renewal check (reads renewal.customerId from config.js)
 functions/api/renewal-status.js  Cloudflare Pages Function that proxies the renewal API
 ```
 
@@ -51,6 +51,7 @@ Opening `index.html` directly from your computer also works, which is handy for 
 | `gallery` | Photos with captions and categories (filter tabs appear automatically) |
 | `grievance` | `mode`: `whatsapp`, `email`, or `link` (Google Form) + escalation ladder |
 | `links`, `social`, `footer` | Footer links and credit line |
+| `renewal.customerId` | SitePragati Customer ID for the renewal gate (empty = off) |
 | `sections` | Menu order and labels. Remove a line to hide a section. |
 
 Any section whose data is empty (`[]` or `null`) is hidden automatically, along with its menu item.
@@ -91,7 +92,7 @@ Notes:
 - Every save is a Git commit, so the full history (and undo) is available on GitHub.
 ## Renewal gate (SitePragati)
 
-`assets/renewal-gate.js` checks the panchayat's SitePragati customer record (`CUSTOMER_ID` at the top of the file) on every page load:
+`assets/renewal-gate.js` checks the panchayat's SitePragati customer record on every page load. The Customer ID is `renewal.customerId` in `config.js`; set it in the admin panel under **सेटिंग्ज → SitePragati नूतनीकरण** (Settings → SitePragati renewal). An empty ID switches the gate off. The same codebase serves any customer: copy the site, then enter that customer's ID in its admin panel.
 
 | State | Public site | Admin panel |
 |---|---|---|
@@ -101,7 +102,7 @@ Notes:
 
 It **fails open**: if the API is unreachable, returns an error, or has no valid due date, the site works normally. Paying and updating the record on sitepragati.in unlocks the site on the next page load, or straight away with the recheck button.
 
-The Customer ID is deliberately not in `config.js`, because that file is editable from the admin panel.
+Anyone with the admin password can change or clear the Customer ID, and clearing it switches the lock off. That's an accepted trade-off for easy reuse; the commit history on GitHub shows every change (`Admin: update renewal`).
 
 **Hosting requirement:** SitePragati's API sends no CORS header, so the browser goes through `functions/api/renewal-status.js`. That file only runs on **Cloudflare Pages**. On GitHub Pages or other static hosting the request returns 404, and the gate stays switched off (fail open).
 
@@ -109,7 +110,7 @@ Cloudflare Pages setup: Cloudflare dashboard → Workers & Pages → Create → 
 
 Check the proxy after deploying: `https://<site>/api/renewal-status?customerId=<ID>` should return `{"ok":true,"info":{...}}`.
 
-New panchayat: create the customer on sitepragati.in first, with a due date in the future, then put its ID in `assets/renewal-gate.js`.
+New panchayat: create the customer on sitepragati.in first, with a due date in the future, then enter its ID in the new site's admin panel. Saving a past-due ID locks that site immediately.
 ## Upsell ideas (paid extras)
 
 - Real online tax payment through a payment gateway

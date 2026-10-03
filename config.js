@@ -228,5 +228,7 @@ window.GP_CONFIG = {
     { id: "contact", label: "संपर्क" }
   ],
 
-  footer: { credit: "संकेतस्थळ निर्मिती: आपल्या एजन्सीचे नाव" }
+  footer: { credit: "संकेतस्थळ निर्मिती: आपल्या एजन्सीचे नाव" },
+
+  renewal: { customerId: "EmblynAQ1qENZ91" }
 };
