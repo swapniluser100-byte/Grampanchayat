@@ -14,6 +14,8 @@ configs/arjuni.js   starter config for Arjuni (verified facts only, TODOs marked
 images/             put logo, hero photo, leader photos, gallery photos here
 files/              PDFs uploaded from the admin panel (created on first upload)
 admin/              password-protected admin panel (open /admin/ on the live site)
+assets/renewal-gate.js         SitePragati renewal check (Customer ID lives here, not in config.js)
+functions/api/renewal-status.js  Cloudflare Pages Function that proxies the renewal API
 ```
 
 ## Launch a new panchayat (about 30 minutes once you have their data)
@@ -87,6 +89,27 @@ Notes:
 - If two people edit at once, the second save warns before overwriting.
 - Unsaved edits are kept in that browser, so a closed tab or auto-lock doesn't lose work.
 - Every save is a Git commit, so the full history (and undo) is available on GitHub.
+## Renewal gate (SitePragati)
+
+`assets/renewal-gate.js` checks the panchayat's SitePragati customer record (`CUSTOMER_ID` at the top of the file) on every page load:
+
+| State | Public site | Admin panel |
+|---|---|---|
+| More than 7 days before the due date | nothing | nothing |
+| 0–7 days before the due date | nothing | reminder bar with amount, UPI QR in "भरणा तपशील" (payment details) |
+| After the due date (from the next day) | full-screen "temporarily unavailable, contact the office" notice, with no payment details | full-screen payment screen: amount, UPI QR, email for the screenshot, "भरणा केला — पुन्हा तपासा" (I've paid, check again) |
+
+It **fails open**: if the API is unreachable, returns an error, or has no valid due date, the site works normally. Paying and updating the record on sitepragati.in unlocks the site on the next page load, or straight away with the recheck button.
+
+The Customer ID is deliberately not in `config.js`, because that file is editable from the admin panel.
+
+**Hosting requirement:** SitePragati's API sends no CORS header, so the browser goes through `functions/api/renewal-status.js`. That file only runs on **Cloudflare Pages**. On GitHub Pages or other static hosting the request returns 404, and the gate stays switched off (fail open).
+
+Cloudflare Pages setup: Cloudflare dashboard → Workers & Pages → Create → Pages → Connect to Git → pick this repo → Framework preset "None", build command empty, output directory `/` → Deploy. Every push to `main` redeploys, including saves from the admin panel. The admin panel works unchanged there; on a `*.pages.dev` address, type the owner and repo in the setup form yourself, since they're only filled in automatically on github.io.
+
+Check the proxy after deploying: `https://<site>/api/renewal-status?customerId=<ID>` should return `{"ok":true,"info":{...}}`.
+
+New panchayat: create the customer on sitepragati.in first, with a due date in the future, then put its ID in `assets/renewal-gate.js`.
 ## Upsell ideas (paid extras)
 
 - Real online tax payment through a payment gateway
