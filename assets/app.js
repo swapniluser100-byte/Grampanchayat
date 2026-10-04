@@ -91,6 +91,20 @@
     contact: true
   };
   var sections = (C.sections || []).filter(function (s) { return available[s.id]; });
+
+  /* ---------------- pages ----------------
+   * One HTML file per tab (about.html, services.html, …) sets <body data-page="…">;
+   * index.html is the home page. In-page anchors such as "#services" (used in
+   * config.js for buttons and announcements) are turned into page links here. */
+  var PAGE = document.body.getAttribute("data-page") || "home";
+  var PAGE_IDS = ["about", "services", "schemes", "works", "budget", "documents", "committees", "gallery", "grievance", "contact"];
+  function go(href) {
+    href = String(href || "");
+    if (href === "#top" || href === "#") return "index.html";
+    var id = href.charAt(0) === "#" ? href.slice(1) : "";
+    return PAGE_IDS.indexOf(id) >= 0 ? id + ".html" : href;
+  }
+  function here(id) { return id === PAGE ? ' class="active" aria-current="page"' : ""; }
   function label(id, fallback) { var s = (C.sections || []).find(function (x) { return x.id === id; }); return s ? s.label : fallback; }
 
   /* ---------------- renderers ---------------- */
@@ -115,10 +129,10 @@
       '<div class="right">' + (gs ? '<div class="gs">पुढील ग्रामसभा<b>' + dateLong(C.gramSabha.date) + "</b>" + esc(C.gramSabha.time || "") + "</div>" : "") +
       '<button class="menu-btn" type="button" id="menu-open" aria-label="मेनू उघडा" aria-controls="site-nav" aria-expanded="false">' + ic("menu") + "</button></div></div></header>";
     h += '<nav class="nav" id="site-nav" aria-label="मुख्य मेनू"><button class="close" type="button" id="menu-close" aria-label="मेनू बंद करा">' + ic("x") + '</button><div class="wrap"><ul>' +
-      '<li><a href="#top" class="active">मुख्यपृष्ठ</a></li>' +
-      sections.map(function (s) { return '<li><a href="#' + s.id + '">' + esc(s.label) + "</a></li>"; }).join("") + "</ul></div></nav>";
+      '<li><a href="index.html"' + here("home") + ">मुख्यपृष्ठ</a></li>" +
+      sections.map(function (s) { return '<li><a href="' + go("#" + s.id) + '"' + here(s.id) + ">" + esc(s.label) + "</a></li>"; }).join("") + "</ul></div></nav>";
     if (has(C.announcements)) {
-      var items = C.announcements.map(function (a) { return '<a href="' + esc(a.href || "#documents") + '"' + ext(a.href) + ">" + esc(a.text) + (a.isNew ? '<span class="new">नवीन</span>' : "") + "</a>"; }).join("");
+      var items = C.announcements.map(function (a) { return '<a href="' + esc(go(a.href || "#documents")) + '"' + ext(a.href) + ">" + esc(a.text) + (a.isNew ? '<span class="new">नवीन</span>' : "") + "</a>"; }).join("");
       h += '<div class="ticker" aria-label="ताज्या घोषणा"><div class="wrap"><div class="tag">' + ic("megaphone") + 'घोषणा</div><div class="track"><div class="items">' + items + '<span aria-hidden="true" style="display:contents">' + items.replace(/<a /g, '<a tabindex="-1" ') + "</span></div></div></div></div>";
     }
     return h;
@@ -140,7 +154,7 @@
       '<div class="wrap"><div><div class="kicker">' + esc(H.welcome || "आपले स्वागत आहे") + "</div><h2>" + esc(S.name) + "</h2>" +
       (S.tagline ? '<p style="font-family:var(--font-display);font-size:1.3rem;color:#fff;margin-bottom:10px">' + esc(S.tagline) + "</p>" : "") +
       (H.text ? "<p>" + esc(H.text) + "</p>" : "") +
-      '<div class="actions">' + (H.buttons || []).map(function (b, i) { return '<a class="btn ' + (i === 0 ? "btn-accent" : "btn-ghost") + '" href="' + esc(b.href) + '"' + ext(b.href) + ">" + esc(b.label) + "</a>"; }).join("") + "</div></div>" + side + "</div></section>";
+      '<div class="actions">' + (H.buttons || []).map(function (b, i) { return '<a class="btn ' + (i === 0 ? "btn-accent" : "btn-ghost") + '" href="' + esc(go(b.href)) + '"' + ext(b.href) + ">" + esc(b.label) + "</a>"; }).join("") + "</div></div>" + side + "</div></section>";
   }
 
   function rAbout(tint) {
@@ -282,7 +296,7 @@
     var socials = Object.keys(soc).filter(function (k) { return soc[k]; });
     var names = { facebook: "Facebook", youtube: "YouTube", instagram: "Instagram", x: "X" };
     return '<footer class="site"><div class="wrap"><div class="fgrid"><div><h4>' + esc(S.name) + '</h4><p style="font-size:var(--step--1)">' + esc(K.address || "") + "</p>" + (K.phone ? '<p class="num" style="margin-top:6px">' + esc(digits(K.phone)) + "</p>" : "") + "</div>" +
-      '<div><h4>विभाग</h4><ul>' + sections.slice(0, 6).map(function (s) { return '<li><a href="#' + s.id + '">' + esc(s.label) + "</a></li>"; }).join("") + "</ul></div>" +
+      '<div><h4>विभाग</h4><ul>' + sections.slice(0, 6).map(function (s) { return '<li><a href="' + go("#" + s.id) + '">' + esc(s.label) + "</a></li>"; }).join("") + "</ul></div>" +
       (has(C.links) ? "<div><h4>महत्त्वाचे दुवे</h4><ul>" + C.links.map(function (l) { return '<li><a href="' + esc(l.href) + '"' + ext(l.href) + ">" + esc(l.label) + " " + ic("external") + "</a></li>"; }).join("") + "</ul></div>" : "") +
       (socials.length ? "<div><h4>समाजमाध्यमे</h4><ul>" + socials.map(function (k) { return '<li><a href="' + esc(soc[k]) + '" target="_blank" rel="noopener">' + (names[k] || k) + "</a></li>"; }).join("") + "</ul></div>" : "") +
       '</div><div class="base"><span>© ' + digits(new Date().getFullYear()) + " " + esc(S.name) + (S.lastUpdated ? " · शेवटचे अद्यतन: " + dateLong(S.lastUpdated) : "") + "</span><span>" + esc((C.footer || {}).credit || "") + "</span></div></div></footer>" +
@@ -299,7 +313,7 @@
     var tiles = sections.filter(function (s) { return QUICK[s.id]; }).slice(0, 8);
     if (!tiles.length) return "";
     return '<section class="quick" aria-label="झटपट सेवा"><div class="wrap"><div class="qgrid">' + tiles.map(function (s) {
-      return '<a class="qtile" href="#' + s.id + '"><span class="qi">' + ic(QUICK[s.id][0]) + '</span><span class="qt"><b>' + esc(s.label) + "</b><small>" + esc(QUICK[s.id][1]) + '</small></span><span class="qa">' + ic("right") + "</span></a>";
+      return '<a class="qtile" href="' + go("#" + s.id) + '"><span class="qi">' + ic(QUICK[s.id][0]) + '</span><span class="qt"><b>' + esc(s.label) + "</b><small>" + esc(QUICK[s.id][1]) + '</small></span><span class="qa">' + ic("right") + "</span></a>";
     }).join("") + "</div></div></section>";
   }
 
@@ -317,12 +331,33 @@
     [["services", "file", "सेवा"], ["documents", "megaphone", "सूचना"], ["grievance", "message", "तक्रार"], ["contact", "phone", "संपर्क"]].forEach(function (p) {
       if (sections.some(function (s) { return s.id === p[0]; })) picks.push(p);
     });
-    return '<nav class="tabbar" aria-label="झटपट मेनू">' + picks.map(function (p) { return '<a href="#' + p[0] + '">' + ic(p[1]) + "<span>" + p[2] + "</span></a>"; }).join("") + "</nav>";
+    return '<nav class="tabbar" aria-label="झटपट मेनू">' + picks.map(function (p) { return '<a href="' + go("#" + p[0]) + '"' + here(p[0] === "top" ? "home" : p[0]) + ">" + ic(p[1]) + "<span>" + p[2] + "</span></a>"; }).join("") + "</nav>";
   }
 
   /* ---------------- assemble ---------------- */
   var R = { about: rAbout, services: rServices, schemes: rSchemes, works: rWorks, budget: rBudget, documents: rDocuments, committees: rCommittees, gallery: rGallery, grievance: rGrievance, contact: rContact };
-  var body = rTop() + '<main id="main">' + rHero() + rQuick() + rEmergency() + sections.map(function (s, i) { return R[s.id](i % 2 ? " tint" : ""); }).join("") + "</main>" + rFooter() + rTabbar();
+  // home: latest few notices, linking on to the documents page
+  function rLatest() {
+    if (!available.documents) return "";
+    var docs = C.documents.slice().sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); }).slice(0, 4);
+    return '<section class="block" id="latest"><div class="wrap">' + head("ताज्या घडामोडी", "नवीन सूचना", "", '<a class="btn btn-line" href="documents.html">सर्व सूचना ' + ic("right") + "</a>") +
+      '<ul class="doclist">' + docs.map(function (d) {
+        return '<li><span class="d">' + dateShort(d.date) + '</span><span class="t">' + esc(d.title) + (d.type ? '<span class="pill plain">' + esc(d.type) + "</span>" : "") + "</span>" +
+          (d.file ? '<a class="dl" href="' + esc(d.file) + '"' + ext(d.file) + ">" + ic("download") + "डाउनलोड</a>" : '<a class="dl" href="documents.html">' + ic("right") + "पाहा</a>") + "</li>";
+      }).join("") + "</ul></div></section>";
+  }
+  function rCrumbs(text) {
+    return '<div class="crumbs"><div class="wrap"><a href="index.html">' + ic("home") + 'मुख्यपृष्ठ</a><span aria-hidden="true">›</span><span aria-current="page">' + esc(text) + "</span></div></div>";
+  }
+  var page;
+  if (PAGE === "home") page = rHero() + rQuick() + rEmergency() + rLatest();
+  else if (R[PAGE] && available[PAGE]) {
+    page = rCrumbs(label(PAGE, PAGE)) + R[PAGE]("");
+    document.title = label(PAGE, PAGE) + " — " + S.name;
+  } else {
+    page = rCrumbs("पान सापडले नाही") + '<section class="block"><div class="wrap"><div class="card" style="text-align:center;display:grid;gap:12px;justify-items:center"><h2>ही माहिती सध्या उपलब्ध नाही</h2><p class="muted">हा विभाग अजून भरलेला नाही. कृपया मुख्यपृष्ठावर परत जा.</p><a class="btn btn-accent" href="index.html">मुख्यपृष्ठ</a></div></div></section>';
+  }
+  var body = rTop() + '<main id="main">' + page + "</main>" + rFooter() + rTabbar();
   app.innerHTML = body;
 
   /* ---------------- behaviour ---------------- */
@@ -347,16 +382,9 @@
   nav.addEventListener("click", function (e) { if (e.target.closest("a")) closeMenu(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && nav.classList.contains("open")) closeMenu(); });
 
-  // scroll spy + back to top
-  var links = $$(".nav a");
-  var targets = links.map(function (a) { return document.getElementById(a.getAttribute("href").slice(1)); });
+  // back to top (the current page's menu item is marked when the nav is rendered)
   var topBtn = $("#totop");
-  function onScroll() {
-    var y = window.scrollY + 140, idx = 0;
-    targets.forEach(function (t, i) { if (t && t.offsetTop <= y) idx = i; });
-    links.forEach(function (a, i) { a.classList.toggle("active", i === idx); });
-    topBtn.hidden = window.scrollY < 600;
-  }
+  function onScroll() { topBtn.hidden = window.scrollY < 600; }
   window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
   topBtn.onclick = function () { window.scrollTo({ top: 0 }); };
 

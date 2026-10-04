@@ -410,3 +410,16 @@ section.block.tint { background: var(--surface-2); }
   .toast { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
 }
 
+
+/* multipage: breadcrumb under the nav, current tab in the phone bar */
+.crumbs { background: var(--surface-2); border-bottom: 1px solid var(--line); font-size: var(--step--1); }
+.crumbs .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-block: 10px; }
+.crumbs a { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; text-decoration: none; color: var(--brand-ink); }
+.crumbs a .icon { width: 16px; height: 16px; }
+.crumbs [aria-current] { color: var(--muted); }
+.crumbs + section.block { padding-top: 36px; }
+.tabbar a.active { color: var(--brand-ink); }
+.tabbar a.active .icon { stroke-width: 2.3; }
+.tabbar a.active span { position: relative; }
+.tabbar a.active span::after { content: ""; position: absolute; left: 50%; bottom: -5px; width: 18px; height: 3px; margin-left: -9px; border-radius: 3px; background: var(--brand); }
+#latest { padding-top: 48px; }
