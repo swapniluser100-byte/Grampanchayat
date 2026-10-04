@@ -49,41 +49,11 @@
   --step-4: clamp(2.2rem, 5vw, 3.4rem);
   --radius: 18px;
   --pill: 999px;
+  color-scheme: light;
   --wrap: 1180px;
   --fs-scale: 1;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #17110d; --surface: #201813; --surface-2: #2a201a; --fg: #f3e9df; --muted: #bba898; --line: #3a2d25;
-    --brand-ink: color-mix(in oklab, var(--brand) 45%, white);
-    --brand-soft: color-mix(in oklab, var(--brand) 22%, var(--surface));
-    --accent-ink: color-mix(in oklab, var(--accent) 60%, white);
-    --nav-bg: color-mix(in oklab, var(--brand) 70%, black);
-    --hero-bg: color-mix(in oklab, var(--brand) 55%, black);
-    --nav-fg: var(--on-brand); --nav-hover: rgb(255 255 255 / .08);
-    --hero-fg: #eef4f8; --hero-title: #ffffff; --hero-muted: rgb(238 244 248 / .72); --hero-line: rgb(255 255 255 / .16);
-    --hero-card: rgb(255 255 255 / .07); --hero-pattern: rgb(255 255 255 / .045); --hero-shade: 26 16 10;
-    --footer-bg: #1d1511; --footer-fg: rgb(235 241 245 / .8); --footer-head: #ffffff; --footer-link: #ffffff;
-    --ok: #5cc48a; --warn: #e3a33c; --info: #7fa8e6;
-    --shadow: 0 1px 2px rgb(0 0 0 / .3);
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #17110d; --surface: #201813; --surface-2: #2a201a; --fg: #f3e9df; --muted: #bba898; --line: #3a2d25;
-  --brand-ink: color-mix(in oklab, var(--brand) 45%, white);
-  --brand-soft: color-mix(in oklab, var(--brand) 22%, var(--surface));
-  --accent-ink: color-mix(in oklab, var(--accent) 60%, white);
-  --nav-bg: color-mix(in oklab, var(--brand) 70%, black);
-  --hero-bg: color-mix(in oklab, var(--brand) 55%, black);
-    --nav-fg: var(--on-brand); --nav-hover: rgb(255 255 255 / .08);
-    --hero-fg: #eef4f8; --hero-title: #ffffff; --hero-muted: rgb(238 244 248 / .72); --hero-line: rgb(255 255 255 / .16);
-    --hero-card: rgb(255 255 255 / .07); --hero-pattern: rgb(255 255 255 / .045); --hero-shade: 26 16 10;
-    --footer-bg: #1d1511; --footer-fg: rgb(235 241 245 / .8); --footer-head: #ffffff; --footer-link: #ffffff;
-  --ok: #5cc48a; --warn: #e3a33c; --info: #7fa8e6;
-  --shadow: 0 1px 2px rgb(0 0 0 / .3);
-  color-scheme: dark;
-}
+/* Digi is light-only: always white, even when the visitor's device is in dark mode. */
 
 * { box-sizing: border-box; }
 html { font-size: calc(100% * var(--fs-scale)); scroll-behavior: smooth; scroll-padding-top: 120px; }
@@ -440,9 +410,3 @@ section.block.tint { background: var(--surface-2); }
   .toast { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
 }
 
-/* dark mode: keep the new pieces readable */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .sos-list a { background: rgb(217 48 37 / .18); color: #ffb4ab; }
-  :root:not([data-theme="light"]) .hero .kicker { background: var(--surface); }
-}
-:root[data-theme="dark"] .sos-list a { background: rgb(217 48 37 / .18); color: #ffb4ab; }
