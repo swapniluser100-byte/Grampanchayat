@@ -1,25 +1,25 @@
 /* Layout: civic portal — tricolour hairline, utility bar, masthead, nav band,
    then a single centred 1180px column of sections alternating plain and tinted grounds.
-   Branding "Digi": app-like and warm — cream and peach grounds with soft circles, rounded
+   Branding "Digi": app-like — white ground with soft peach circles, rounded
    white cards, terracotta actions, quick-access tiles, emergency strip and (on phones) a
    bottom tab bar. Inspired by the "Digi Gram Panchayat" app concept. Dark mode keeps dark bands. */
 :root {
   --brand: #c8462a;
   --accent: #f4a259;
 
-  --bg: #fdf6ee;
+  --bg: #ffffff;
   --surface: #ffffff;
-  --surface-2: #faebdc;
-  --fg: #2b1f18;
-  --muted: #6b584c;
-  --line: #f0dfcc;
+  --surface-2: #faf6f2;
+  --fg: #1d1a18;
+  --muted: #57514c;
+  --line: #ebe3db;
   --brand-ink: var(--brand);
   --brand-soft: color-mix(in oklab, var(--brand) 8%, var(--surface));
-  --accent-ink: color-mix(in oklab, var(--accent) 55%, #6a2a10);
+  --accent-ink: #8f3f17;
   --nav-bg: var(--surface);
   --nav-fg: var(--fg);
   --nav-hover: var(--brand-soft);
-  --hero-bg: #fbeee0;
+  --hero-bg: #ffffff;
   --hero-fg: var(--fg);
   --hero-title: var(--fg);
   --hero-muted: var(--muted);
@@ -27,7 +27,7 @@
   --hero-card: #ffffff;
   --hero-pattern: transparent;
   --hero-shade: 255 255 255;
-  --footer-bg: #fbeee0;
+  --footer-bg: #faf6f2;
   --footer-fg: var(--muted);
   --footer-head: var(--fg);
   --footer-link: var(--brand-ink);
@@ -375,8 +375,8 @@ footer.site .base { border-top: 1px solid color-mix(in oklab, var(--footer-fg) 2
 .hero { border-bottom: 0; }
 .hero .wrap { padding-block: 44px 96px; }
 .hero h2 { letter-spacing: -.01em; }
-.hero .kicker { display: inline-block; background: #fff; color: var(--brand-ink); border-radius: var(--pill); padding: 3px 14px; font-size: var(--step--1); box-shadow: var(--shadow); }
-.factsheet { border: 0; border-radius: var(--radius); }
+.hero .kicker { display: inline-block; background: color-mix(in oklab, var(--accent) 22%, var(--surface)); color: var(--accent-ink); border-radius: var(--pill); padding: 3px 14px; font-size: var(--step--1); box-shadow: var(--shadow); }
+.factsheet { border: 1px solid var(--line); border-radius: var(--radius); }
 .factsheet .gs-date { background: var(--brand); color: #fff; }
 
 /* pill buttons; primary action is terracotta */
@@ -387,7 +387,7 @@ footer.site .base { border-top: 1px solid color-mix(in oklab, var(--footer-fg) 2
 /* masthead seal, nav, ticker */
 .seal { background: var(--brand); color: #fff; border: 0; box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 35%, transparent); }
 .nav a.active { border-bottom-color: var(--brand); }
-.ticker { background: var(--bg); border-bottom: 0; padding-block: 10px; }
+.ticker { background: var(--bg); border-bottom: 1px solid var(--line); padding-block: 10px; }
 .ticker .wrap { background: color-mix(in oklab, var(--accent) 28%, var(--surface)); border-radius: var(--pill); overflow: hidden; padding-inline: 0; }
 @media (min-width: 720px) { .ticker .wrap { margin-inline: 24px; max-width: calc(var(--wrap) - 48px); } }
 @media (max-width: 719px) { .ticker .wrap { margin-inline: 16px; } }
@@ -395,17 +395,17 @@ footer.site .base { border-top: 1px solid color-mix(in oklab, var(--footer-fg) 2
 .demo-strip { background: var(--accent); }
 
 /* cards, chips, section heads */
-.card, .stats, .table-wrap, .doclist, .message, .mapbox { border-color: transparent; box-shadow: var(--shadow); }
+.card, .stats, .table-wrap, .doclist, .message, .mapbox { border-color: var(--line); box-shadow: var(--shadow); }
 .ibox { border-radius: 50%; background: color-mix(in oklab, var(--accent) 22%, var(--surface)); color: var(--brand-ink); }
 .sec-head .eyebrow { display: inline-block; background: color-mix(in oklab, var(--accent) 22%, var(--surface)); color: var(--accent-ink); border-radius: var(--pill); padding: 2px 12px; margin-bottom: 6px; }
 section.block.tint { background: var(--surface-2); }
-.tab { border-color: transparent; background: var(--surface); box-shadow: var(--shadow); }
+.tab { border-color: var(--line); background: var(--surface); box-shadow: none; }
 .avatar { background: color-mix(in oklab, var(--accent) 22%, var(--surface)); border: 0; }
 
 /* quick-access tiles — float up over the hero's bottom edge */
 .quick { position: relative; z-index: 2; margin-top: -64px; }
 .qgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 14px; }
-.qtile { display: flex; align-items: center; gap: 14px; background: var(--surface); border-radius: var(--radius); padding: 16px 14px 16px 16px; text-decoration: none; color: var(--fg); box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
+.qtile { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 14px 16px 16px; text-decoration: none; color: var(--fg); box-shadow: var(--shadow); transition: transform .15s, box-shadow .15s; }
 .qtile:hover { transform: translateY(-2px); box-shadow: 0 2px 4px rgb(110 60 30 / .06), 0 14px 30px rgb(110 60 30 / .12); }
 .qi { width: 48px; height: 48px; border-radius: 50%; flex: none; display: grid; place-items: center; background: color-mix(in oklab, var(--accent) 24%, var(--surface)); color: var(--brand-ink); }
 .qi .icon { width: 24px; height: 24px; }
@@ -417,7 +417,7 @@ section.block.tint { background: var(--surface-2); }
 
 /* emergency strip */
 .sos { padding-top: 22px; }
-.sos-box { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; background: var(--surface); border-radius: var(--radius); padding: 14px 18px; box-shadow: var(--shadow); border-left: 5px solid #d93025; }
+.sos-box { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 18px; box-shadow: var(--shadow); border-left: 5px solid #d93025; }
 .sos-head { display: flex; align-items: center; gap: 12px; }
 .sos-head b { display: block; font-size: 1.05rem; }
 .sos-head small { color: var(--muted); font-size: var(--step--1); }
