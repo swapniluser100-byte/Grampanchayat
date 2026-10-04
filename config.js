@@ -19,7 +19,7 @@ window.GP_CONFIG = {
     demo: true
   },
 
-  theme: { brand: "#0e6a8a", accent: "#ef8a17", numerals: "devanagari" },
+  theme: { brand: "#c8462a", accent: "#f4a259", numerals: "devanagari" },
 
   contact: {
     phone: "02300-000000",
@@ -229,6 +229,14 @@ window.GP_CONFIG = {
   ],
 
   footer: { credit: "संकेतस्थळ निर्मिती: आपल्या एजन्सीचे नाव" },
+
+  emergency: [
+    { label: "आपत्कालीन मदत", number: "112" },
+    { label: "रुग्णवाहिका", number: "108" },
+    { label: "पोलीस", number: "100" },
+    { label: "अग्निशमन", number: "101" },
+    { label: "महिला हेल्पलाइन", number: "1091" }
+  ],
 
   renewal: { customerId: "EmblynAQ1qENZ91" }
 };

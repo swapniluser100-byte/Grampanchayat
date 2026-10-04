@@ -263,6 +263,11 @@
       { type: "object", key: "gramSabha", title: "पुढील ग्रामसभा", nullable: true, item: { date: "", time: "", venue: "" }, fields: [
         D("date", "दिनांक"), T("time", "वेळ", { ph: "उदा. सकाळी ११:००" }), T("venue", "ठिकाण", { full: true })
       ] },
+      { type: "list", key: "emergency", title: "आपत्कालीन संपर्क (SOS)", addLabel: "क्रमांक जोडा", item: { label: "", number: "" },
+        hint: "मुख्यपृष्ठावर लाल पट्टीत दिसतात; मोबाईलवर क्लिक केल्यास थेट फोन लागतो. सर्व काढल्यास पट्टी लपते.",
+        summary: function (e) { return [e.label, e.number].filter(Boolean).join(" — "); }, fields: [
+          T("label", "नाव", { ph: "उदा. रुग्णवाहिका" }), T("number", "क्रमांक", { ph: "उदा. 108" })
+        ] },
       { type: "object", key: "hero", title: "स्वागत भाग", fields: [
         T("welcome", "छोटे शीर्षक", { ph: "आपले स्वागत आहे" }), IMG("image", "पार्श्वभूमी फोटो", { max: 2000 }),
         TA("text", "स्वागत मजकूर", { full: true }),
@@ -956,7 +961,7 @@
   }
 
   var PREVIEW_HTML = '<!doctype html><html lang="mr"><head><meta charset="utf-8"><base href="{BASE}"><meta name="viewport" content="width=device-width, initial-scale=1">' +
-    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Tiro+Devanagari+Marathi&display=swap">' +
+    '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Devanagari:wght@400;500;600;700;800&display=swap">' +
     '<link rel="stylesheet" href="assets/style.css"></head><body><div id="app"></div><script>window.GP_CONFIG={CFG};' +
     // <base> मुळे #विभाग दुवे खरे संकेतस्थळ उघडतात; पूर्वावलोकनात त्याच पानावर स्क्रोल करा
     'document.addEventListener("click",function(e){var a=e.target.closest("a[href^=\'#\']");if(!a)return;e.preventDefault();var t=document.getElementById(a.getAttribute("href").slice(1));if(t)t.scrollIntoView();});' +

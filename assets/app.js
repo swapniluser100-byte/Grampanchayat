@@ -289,9 +289,40 @@
       '<button class="totop" type="button" id="totop" aria-label="वर जा" hidden>' + ic("up") + "</button>";
   }
 
+  // quick-access tiles: one per visible section, app-style (icon, label, hint, arrow)
+  var QUICK = {
+    about: ["users", "पदाधिकारी व गावाची माहिती"], services: ["file", "दाखले, शुल्क व कागदपत्रे"], schemes: ["landmark", "केंद्र, राज्य व जिल्हा योजना"],
+    works: ["road", "कामे, निधी व स्थिती"], budget: ["rupee", "उत्पन्न व खर्च"], documents: ["megaphone", "सूचना फलक व निविदा"],
+    committees: ["grid", "समित्या व प्रभाग सदस्य"], gallery: ["image", "कार्यक्रम व कामांचे फोटो"], grievance: ["message", "तक्रार थेट पाठवा"], contact: ["phone", "पत्ता, फोन व वेळ"]
+  };
+  function rQuick() {
+    var tiles = sections.filter(function (s) { return QUICK[s.id]; }).slice(0, 8);
+    if (!tiles.length) return "";
+    return '<section class="quick" aria-label="झटपट सेवा"><div class="wrap"><div class="qgrid">' + tiles.map(function (s) {
+      return '<a class="qtile" href="#' + s.id + '"><span class="qi">' + ic(QUICK[s.id][0]) + '</span><span class="qt"><b>' + esc(s.label) + "</b><small>" + esc(QUICK[s.id][1]) + '</small></span><span class="qa">' + ic("right") + "</span></a>";
+    }).join("") + "</div></div></section>";
+  }
+
+  // emergency numbers (config: emergency: [{ label, number }])
+  function rEmergency() {
+    if (!has(C.emergency)) return "";
+    return '<section class="sos" aria-label="आपत्कालीन संपर्क"><div class="wrap"><div class="sos-box"><div class="sos-head"><span class="sos-dot">SOS</span><div><b>आपत्कालीन संपर्क</b><small>एका क्लिकवर फोन लावा</small></div></div><div class="sos-list">' +
+      C.emergency.map(function (e) { return '<a href="tel:' + esc(String(e.number).replace(/[^\d+]/g, "")) + '">' + ic("phone") + "<span>" + esc(e.label) + '</span><b class="num">' + esc(digits(e.number)) + "</b></a>"; }).join("") +
+      "</div></div></div></section>";
+  }
+
+  // phone bottom tab bar: home + up to four key sections
+  function rTabbar() {
+    var picks = [["top", "home", "मुख्यपृष्ठ"]];
+    [["services", "file", "सेवा"], ["documents", "megaphone", "सूचना"], ["grievance", "message", "तक्रार"], ["contact", "phone", "संपर्क"]].forEach(function (p) {
+      if (sections.some(function (s) { return s.id === p[0]; })) picks.push(p);
+    });
+    return '<nav class="tabbar" aria-label="झटपट मेनू">' + picks.map(function (p) { return '<a href="#' + p[0] + '">' + ic(p[1]) + "<span>" + p[2] + "</span></a>"; }).join("") + "</nav>";
+  }
+
   /* ---------------- assemble ---------------- */
   var R = { about: rAbout, services: rServices, schemes: rSchemes, works: rWorks, budget: rBudget, documents: rDocuments, committees: rCommittees, gallery: rGallery, grievance: rGrievance, contact: rContact };
-  var body = rTop() + '<main id="main">' + rHero() + sections.map(function (s, i) { return R[s.id](i % 2 ? " tint" : ""); }).join("") + "</main>" + rFooter();
+  var body = rTop() + '<main id="main">' + rHero() + rQuick() + rEmergency() + sections.map(function (s, i) { return R[s.id](i % 2 ? " tint" : ""); }).join("") + "</main>" + rFooter() + rTabbar();
   app.innerHTML = body;
 
   /* ---------------- behaviour ---------------- */
