@@ -28,6 +28,10 @@ functions/api/renewal-status.js  Cloudflare Pages Function that proxies the rene
 
 Opening `index.html` directly from your computer also works, which is handy for showing a client offline.
 
+## Pages
+
+The site is multipage. `index.html` is the home page (hero, quick-access tiles, emergency numbers, latest notices). Each menu tab has its own page: `about.html`, `services.html`, `schemes.html`, `works.html`, `budget.html`, `documents.html`, `committees.html`, `gallery.html`, `grievance.html`, `contact.html`. Each page is the same shell with `<body data-page="…">`, and `assets/app.js` renders only that section. Links written as `#services` in `config.js` (buttons, announcements) automatically point to the matching page. On Cloudflare the addresses are served without `.html` (`/services`).
+
 ## What you can configure
 
 | Key | What it controls |
